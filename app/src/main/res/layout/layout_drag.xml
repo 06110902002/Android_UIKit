@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.check.viewdraghelper.drag.MyDragViewLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:background="?attr/colorAccent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Menu"
+            android:layout_centerInParent="true"
+            android:textSize="22sp"
+            android:textColor="#fff"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorPrimary">
+
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:id="@+id/txt_content"
+            android:gravity="center"
+            android:text="Content"
+            android:textSize="22sp"
+            android:textColor="#fff"/>
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:id="@+id/img_close"
+            android:background="#90bc56"
+            android:layout_alignParentRight="true"
+            android:textSize="22sp"
+            android:textColor="#fff"/>
+    </RelativeLayout>
+</com.check.viewdraghelper.drag.MyDragViewLayout>
