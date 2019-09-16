@@ -42,4 +42,13 @@
         </LinearLayout>
     </com.check.viewdraghelper.scroller.ElasticLayout>
 
+    <com.check.viewdraghelper.scroller.SlideButton
+        android:layout_width="100dp"
+        android:layout_height="60dp" />
+
+    <com.check.viewdraghelper.scroller.SwitchButton
+        android:background="#c90872"
+        android:layout_width="60dp"
+        android:layout_height="200dp" />
+
 </LinearLayout>

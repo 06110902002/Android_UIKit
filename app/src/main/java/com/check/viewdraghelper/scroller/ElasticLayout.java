@@ -101,7 +101,6 @@ public class ElasticLayout extends LinearLayout {
 //                    closeBottom();
 //                }
 
-                
                 scrollOffset = getScrollY();
                 if(scrollOffset > bottomContent.getMeasuredHeight() / 2){
                     expendBottom();
