@@ -68,6 +68,7 @@ public class ElasticLayout extends LinearLayout {
 
     float downX,downY;
     int scrollOffset;
+    float actionDownY;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -76,6 +77,7 @@ public class ElasticLayout extends LinearLayout {
             case MotionEvent.ACTION_DOWN:
                 downX = (int) event.getX();
                 downY = (int) event.getY();
+                actionDownY = event.getY();
                 break;
             case MotionEvent.ACTION_MOVE:
                 int endY = (int) event.getY();
@@ -90,6 +92,16 @@ public class ElasticLayout extends LinearLayout {
                 downY = (int) event.getY();
                 break;
             case MotionEvent.ACTION_UP:
+//                float dvy = event.getY() - actionDownY;  //不加阈值的方式
+//                scrollOffset = getScrollY();
+//                if(dvy < 0 ){       //up
+//                    expendBottom();
+//
+//                }else if(dvy > 0 ){
+//                    closeBottom();
+//                }
+
+                
                 scrollOffset = getScrollY();
                 if(scrollOffset > bottomContent.getMeasuredHeight() / 2){
                     expendBottom();
