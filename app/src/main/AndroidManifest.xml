@@ -21,6 +21,8 @@
 
         <activity android:name=".drag.DragActivity" />
 
+        <activity android:name=".LoadAnimActivity" />
+
 
 
 

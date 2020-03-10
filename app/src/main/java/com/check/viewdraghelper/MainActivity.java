@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
         ClickListener onClick = new ClickListener();
         btnScroller.setOnClickListener(onClick);
         btnElatic.setOnClickListener(onClick);
+        findViewById(R.id.btn_load_tip).setOnClickListener(onClick);
 
     }
 
@@ -42,6 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
                 case R.id.btn_elastic:
                     startActivity(new Intent(MainActivity.this, ElasticActivity.class));
+                    break;
+
+                case R.id.btn_load_tip:
+                    startActivity(new Intent(MainActivity.this, LoadAnimActivity.class));
+
                     break;
             }
         }
