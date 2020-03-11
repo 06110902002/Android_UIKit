@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         btnScroller.setOnClickListener(onClick);
         btnElatic.setOnClickListener(onClick);
         findViewById(R.id.btn_load_tip).setOnClickListener(onClick);
+        findViewById(R.id.btn_tab_recyc).setOnClickListener(onClick);
 
     }
 
@@ -46,8 +47,12 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.btn_load_tip:
-                    startActivity(new Intent(MainActivity.this, LoadAnimActivity.class));
+                    startActivity(new Intent(MainActivity.this, RecycViewActivity.class));
 
+                    break;
+
+                case R.id.btn_tab_recyc:
+                    startActivity(new Intent(MainActivity.this, TabLayoutRecycActivity.class));
                     break;
             }
         }

@@ -23,6 +23,10 @@
 
         <activity android:name=".LoadAnimActivity" />
 
+        <activity android:name=".RecycViewActivity" />
+
+        <activity android:name=".TabLayoutRecycActivity" />
+
 
 
 
