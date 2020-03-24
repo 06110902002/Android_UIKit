@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:imagecontrol="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+
+
+    <com.check.viewdraghelper.customerboom.RoundImageView
+        android:id="@+id/iv_round"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@mipmap/location_icon"
+        imagecontrol:border_inside_color="#bc0978"
+        imagecontrol:border_outside_color="#ba3456"
+        imagecontrol:border_thickness="1dp">
+
+    </com.check.viewdraghelper.customerboom.RoundImageView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="appear"
+            android:textAllCaps="false"
+            android:onClick="showme"
+            />
+        <Button
+            android:id="@+id/btn_disappear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="disappear"
+
+            android:textAllCaps="false"
+            android:onClick="disappear"
+            />
+    </LinearLayout>
+
+    <com.check.viewdraghelper.arcanim.CircleMenuView
+        android:id="@+id/sample_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#12ba78"
+
+        app:strokeWidth="1dp"
+        app:radius="20dp"
+        app:textSize="9sp"
+        app:topText="哈哈"
+        app:timeOut="500"
+        app:majorColor="#ffffff"
+        app:textColor="#ffffff"
+        app:backColor="@android:color/transparent"
+        app:rightTopText="一个字"
+        app:rightBottomText="一"
+        app:leftBottomText="一个大字"
+        app:leftTopText="又一个大字"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</LinearLayout>

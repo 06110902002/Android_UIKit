@@ -8,12 +8,14 @@
     <Button
         android:id="@+id/btn_elastic"
         android:text="scrollLayout"
+        android:background="#3a4988"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/btn_drag"
         android:text="dragview"
+        android:background="#009988"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -32,6 +34,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="recyc+tab"/>
+
+        <Button
+            android:id="@+id/btn_file_down_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="r文件上传下载"/>
+
+        <Button
+            android:id="@+id/btn_boom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="爆炸效果"/>
     </LinearLayout>
 
 </LinearLayout>

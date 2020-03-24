@@ -8,10 +8,48 @@
     </declare-styleable>
 
     <declare-styleable name="MdStyleProgress">
-        <attr name="progress_color" format="color"/>
-        <attr name="progress_width" format="dimension"/>
-        <attr name="tip_radius" format="dimension"/>
+        <attr name="progress_color" format="color" />
+        <attr name="progress_width" format="dimension" />
+        <attr name="tip_radius" format="dimension" />
     </declare-styleable>
+
+
+    <!--自定义爆炸属性文件-->
+    <declare-styleable name="roundImgView">
+        <attr name="border_thickness" format="dimension" />
+        <attr name="border_inside_color" format="color" />
+        <attr name="border_outside_color" format="color" />
+    </declare-styleable>
+
+
+    <declare-styleable name="CircleMenuView">
+        <!-- 单个按钮的最大半径，控件会自动设置为14*radius的长和宽 -->
+        <attr name="arcradius" format="dimension"></attr>
+        <!-- 文字的最大大小，单位为sp -->
+        <attr name="textSize" format="dimension"></attr>
+        <!-- 点击触发涟漪的时间，如果在该时间内抬手或者move到按钮区域之外，控件会恢复，否则在timeout时间后触发涟漪效果 单位为毫秒-->
+        <attr name="timeOut" format="integer"></attr>
+        <!-- 上方的文字 -->
+        <attr name="topText" format="string"></attr>
+        <!--右上方的文字-->
+        <attr name="rightTopText" format="string"></attr>
+        <!--右下方的文字-->
+        <attr name="rightBottomText" format="string"></attr>
+        <!--左下方的文字-->
+        <attr name="leftBottomText" format="string"></attr>
+        <!--左上方的文字-->
+        <attr name="leftTopText" format="string"></attr>
+        <!--主体颜色-->
+        <attr name="majorColor" format="color"></attr>
+        <!--文字的颜色-->
+        <attr name="textColor" format="color"></attr>
+        <!--背景颜色-->
+        <attr name="backColor" format="color"></attr>
+        <!--宽度 单位为dp-->
+        <attr name="strokeWidth" format="dimension"></attr>
+    </declare-styleable>
+
+
 
 
 </resources>
