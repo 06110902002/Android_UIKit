@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.check.viewdraghelper.customerboom.BoomActivity;
 import com.check.viewdraghelper.drag.DragActivity;
+import com.check.viewdraghelper.pathanim.PathAnimActivity;
 
 import me.samlss.bloom.Bloom;
 import me.samlss.bloom.effector.BloomEffector;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_tab_recyc).setOnClickListener(onClick);
         findViewById(R.id.btn_file_down_up).setOnClickListener(onClick);
         findViewById(R.id.btn_boom).setOnClickListener(onClick);
+        findViewById(R.id.btn_path).setOnClickListener(onClick);
 
     }
 
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.btn_load_tip:
-                    startActivity(new Intent(MainActivity.this, RecycViewActivity.class));
+                    startActivity(new Intent(MainActivity.this, LoadAnimActivity.class));
                     break;
 
                 case R.id.btn_tab_recyc:
@@ -82,6 +84,11 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(MainActivity.this, BoomActivity.class));
 
                     break;
+
+                case R.id.btn_path:
+                    startActivity(new Intent(MainActivity.this, PathAnimActivity.class));
+                    break;
+
             }
         }
     }

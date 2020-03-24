@@ -35,5 +35,14 @@ public class LoadAnimActivity extends Activity {
             }
         });
 
+        findViewById(R.id.fail).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                progress.setStatus(LoadAnimView.Status.LoadFail);
+                progress.failAnima();
+            }
+        });
+
     }
 }

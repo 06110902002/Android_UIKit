@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".pathanim.PathAnimActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -36,6 +36,8 @@
         <activity android:name=".FileUploadDownLoadActivity"/>
 
         <activity android:name=".customerboom.BoomActivity" />
+
+        <activity android:name=".pathanim.PathAnimActivity" />
 
 
 
