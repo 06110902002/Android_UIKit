@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.btn_path:
-                    startActivity(new Intent(MainActivity.this, PathAnimActivity.class));
+                    startActivity(new Intent(MainActivity.this, ArcAnimActivity.class));
                     break;
 
             }

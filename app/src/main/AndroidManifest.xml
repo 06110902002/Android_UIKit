@@ -38,6 +38,7 @@
         <activity android:name=".customerboom.BoomActivity" />
 
         <activity android:name=".pathanim.PathAnimActivity" />
+        <activity android:name=".ArcAnimActivity" />
 
 
 
