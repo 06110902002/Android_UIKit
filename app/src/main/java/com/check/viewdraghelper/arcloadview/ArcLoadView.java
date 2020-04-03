@@ -15,6 +15,7 @@ import android.security.ConfirmationNotAvailableException;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 
 import androidx.annotation.Nullable;
 
@@ -46,6 +47,7 @@ public class ArcLoadView extends View {
     private float swingAngle;            //摆动圆弧转动角度
     private float outCirlceScaleBigRadius;  //外环放大动画半径
     private float outCircleOriginRadius;   //原始半径
+    private Path midCircleMarkPath;
     private float innerCircleRadius;
     private RectF outArcRect;
     private int width;
@@ -61,6 +63,14 @@ public class ArcLoadView extends View {
     private RectF middleCirlceSwingRect;  //中圆环摆动的弧形矩形框
     private RectF innerCirlceSwingRect;  //内圆环摆动的弧形矩形框
     private int swingLingOffSet;
+    private Path line1AnimPath;
+    private Path line1Path;
+    private boolean lineOriginStatus = true;
+    private Path line2AnimPath;
+    private Path line2Path;
+    private PathMeasure line1Measure;
+    private PathMeasure line2Measure;
+
 
 
 
@@ -122,6 +132,16 @@ public class ArcLoadView extends View {
         outCirclePointPath = new Path();
         swingLingOffSet = Utils.dp2px(context,20);
 
+        line1AnimPath = new Path();
+        line1Path = new Path();
+        line1Measure = new PathMeasure();
+
+        line2AnimPath = new Path();
+        line2Path = new Path();
+        line2Measure = new PathMeasure();
+
+        midCircleMarkPath = new Path();
+
         startAnim();
 
     }
@@ -134,6 +154,7 @@ public class ArcLoadView extends View {
                 startOutCirlceGraduateLineAnim();
                 startSwingAnim();
                 startOutCirclePointSwingAnim();
+                startNotchLineAnim();
             }
         },1000);
     }
@@ -143,6 +164,26 @@ public class ArcLoadView extends View {
         super.onLayout(changed, left, top, right, bottom);
         width = getWidth();
         height = getHeight();
+
+        //第一条线的起始点坐标
+        float startX  = (float)(width / 2) + (float) Math.sin(arc2Angle(10)) * (innerCircleRadius * 5 + graduateLineLength / 2.0f);
+        float startY = (float)(height / 2) - (float) Math.cos(arc2Angle(10)) * (innerCircleRadius * 5 + graduateLineLength / 2.0f );
+        float stopX1 = (float)(width / 2) + (float) Math.sin(arc2Angle(10)) * (innerCircleRadius - graduateLineLength / 2.0f);
+        float stopY1 = (float)(height / 2) - (float) Math.cos(arc2Angle(10)) * (innerCircleRadius - graduateLineLength / 2.0f);
+
+        line1Path.moveTo(startX,startY);
+        line1Path.lineTo(stopX1,stopY1);
+        line1Measure.setPath(line1Path,false);
+
+        //第二条线的起始点坐标
+        float startX2  = (float)(width / 2) + (float) Math.sin(arc2Angle(350)) * (innerCircleRadius * 5 + graduateLineLength / 2.0f);
+        float startY2 = (float)(height / 2) - (float) Math.cos(arc2Angle(350)) * (innerCircleRadius * 5 + graduateLineLength / 2.0f );
+        float stopX2 = (float)(width / 2) + (float) Math.sin(arc2Angle(350)) * (innerCircleRadius - graduateLineLength / 2.0f);
+        float stopY2 = (float)(height / 2) - (float) Math.cos(arc2Angle(350)) * (innerCircleRadius - graduateLineLength / 2.0f);
+
+        line2Path.moveTo(startX2,startY2);
+        line2Path.lineTo(stopX2,stopY2);
+        line2Measure.setPath(line2Path,false);
     }
 
     @Override
@@ -152,6 +193,16 @@ public class ArcLoadView extends View {
         drawPointRect(canvas);
         drawCircleGraduate(canvas);
         drawIndexArc(canvas);
+        drawMidNotchLine(canvas);
+    }
+
+    /**
+     * 画中环缺口线
+     * @param canvas
+     */
+    private void drawMidNotchLine(Canvas canvas){
+        canvas.drawPath(line1AnimPath,indexPaint);
+        canvas.drawPath(line2AnimPath,indexPaint);
 
     }
 
@@ -160,21 +211,78 @@ public class ArcLoadView extends View {
      * @param canvas
      */
     private void drawOutCircle(Canvas canvas){
+        outCirclePaint.setStrokeWidth(2);
+        outCirclePaint.setColor(Color.parseColor("#75C8BD"));
+
+        //画中圆环--带缺口
         canvas.drawPath(getThreePointPath(),outCirclePaint);
 
-        float startX = (float)(width / 2) + (float) Math.sin(arc2Angle(10)) * (innerCircleRadius + graduateLineLength / 2.0f);
-        float startY = (float)(height / 2) - (float) Math.cos(arc2Angle(10)) * (innerCircleRadius + graduateLineLength / 2.0f);
+        //画中圆环中间标记弧线
+        midCircleMarkPath.addArc(outArcRect,120,45);
+        outCirclePaint.setColor(Color.WHITE);
+        outCirclePaint.setStrokeWidth(15);
+        canvas.drawPath(midCircleMarkPath,outCirclePaint);
 
-        float stopX = (float)(width / 2) + (float) Math.sin(arc2Angle(10)) * (innerCircleRadius - graduateLineLength / 2.0f);
-        float stopY = (float)(height / 2) - (float) Math.cos(arc2Angle(10)) * (innerCircleRadius - graduateLineLength / 2.0f);
-        canvas.drawLine(startX, startY, stopX, stopY, animPaint);
+//        float startX = (float)(width / 2) + (float) Math.sin(arc2Angle(10)) * (innerCircleRadius + graduateLineLength / 2.0f);
+//        float startY = (float)(height / 2) - (float) Math.cos(arc2Angle(10)) * (innerCircleRadius + graduateLineLength / 2.0f);
+//
+//        float stopX = (float)(width / 2) + (float) Math.sin(arc2Angle(10)) * (innerCircleRadius - graduateLineLength / 2.0f);
+//        float stopY = (float)(height / 2) - (float) Math.cos(arc2Angle(10)) * (innerCircleRadius - graduateLineLength / 2.0f);
+//        canvas.drawLine(startX, startY, stopX, stopY, animPaint);
+//
+//        float startX1 = (float)(width / 2) + (float) Math.sin(arc2Angle(350)) * (innerCircleRadius + graduateLineLength / 2.0f);
+//        float startY1 = (float)(height / 2) - (float) Math.cos(arc2Angle(350)) * (innerCircleRadius + graduateLineLength / 2.0f);
+//
+//        float stopX1 = (float)(width / 2) + (float) Math.sin(arc2Angle(350)) * (innerCircleRadius - graduateLineLength / 2.0f);
+//        float stopY1 = (float)(height / 2) - (float) Math.cos(arc2Angle(350)) * (innerCircleRadius - graduateLineLength / 2.0f);
+//        canvas.drawLine(startX1, startY1, stopX1, stopY1, animPaint);
+    }
 
-        float startX1 = (float)(width / 2) + (float) Math.sin(arc2Angle(350)) * (innerCircleRadius + graduateLineLength / 2.0f);
-        float startY1 = (float)(height / 2) - (float) Math.cos(arc2Angle(350)) * (innerCircleRadius + graduateLineLength / 2.0f);
+    /**
+     * 启动中圆环缺口线动画
+     */
+    private void startNotchLineAnim(){
+        ValueAnimator mAnimator=ValueAnimator.ofFloat(0,line1Measure.getLength());
+        mAnimator.setDuration(2000);
+        mAnimator.setInterpolator(new DecelerateInterpolator());
+        mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float start = (float) mAnimator.getAnimatedValue();
+                float end = start + line1Measure.getLength() / 20;
+                if(end > line1Measure.getLength()){
+                    end= line1Measure.getLength();
+                }
+                if((line1Measure.getLength() - start) >= line1Measure.getLength() / 20){
+                    line1AnimPath.reset();
+                }
+                //从 原始path中取出一段 放入目的path中（添加），并不会删除目的path中以前的数据
+                line1Measure.getSegment(start,end,line1AnimPath,true);
 
-        float stopX1 = (float)(width / 2) + (float) Math.sin(arc2Angle(350)) * (innerCircleRadius - graduateLineLength / 2.0f);
-        float stopY1 = (float)(height / 2) - (float) Math.cos(arc2Angle(350)) * (innerCircleRadius - graduateLineLength / 2.0f);
-        canvas.drawLine(startX1, startY1, stopX1, stopY1, animPaint);
+            }
+        });
+        mAnimator.start();
+
+        ValueAnimator mAnimator2=ValueAnimator.ofFloat(0,line2Measure.getLength());
+        mAnimator2.setDuration(2000);
+        mAnimator2.setInterpolator(new DecelerateInterpolator());
+        mAnimator2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float start = (float) mAnimator.getAnimatedValue();
+                float end = start + line2Measure.getLength() / 20;
+                if(end > line2Measure.getLength()){
+                    end= line2Measure.getLength();
+                }
+                if((line2Measure.getLength() - start) >= line2Measure.getLength() / 20){
+                    line2AnimPath.reset();
+                }
+                line2Measure.getSegment(start,end,line2AnimPath,true);
+
+            }
+        });
+        mAnimator2.start();
+
     }
 
     /**
@@ -204,7 +312,7 @@ public class ArcLoadView extends View {
         //画外圆刻度圆环
         float evenryDegrees = arc2Angle(6.0f);
         Point centerPos = new Point(width / 2 ,height / 2);
-
+        outCirclePaint.setColor(Color.parseColor("#5E7379"));
         for (int i = 0; i < 60; i++) {
             float degrees = i * evenryDegrees;
             if (i >= 0 && i < 3 ) {
@@ -254,7 +362,7 @@ public class ArcLoadView extends View {
                 startPos.y + innerCircleRadius + (float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle))) + innerCircleWidth), Path.Direction.CCW);
 
         Paint rectPaint = new Paint();
-        rectPaint.setColor(Color.RED);
+        rectPaint.setColor(Color.WHITE);
         rectPaint.setStyle(Paint.Style.FILL);
         rectPaint.setStrokeWidth(3);
         canvas.drawPath(rectpath,rectPaint);
@@ -284,7 +392,7 @@ public class ArcLoadView extends View {
     private void drawIndexArc(Canvas canvas){
 
         //画在外环摆动的圆环
-        indexPaint.setColor(Color.BLUE);
+        indexPaint.setColor(Color.parseColor("#75C8BD"));
         indexPaint.setStrokeWidth(Utils.dp2px(context,1));
 
         RectF outArcRect = new RectF(
