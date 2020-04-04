@@ -55,13 +55,21 @@ public class ArcLoadView extends View {
     private int innerCircleWidth;
     private int graduateLineLength; //刻度线的长度
     private int innreCirlceGraduateRadius;  //内圆刻度半径
+
     private PathMeasure outSwingPathMeasure;    //在外圈摆动的路径测试器
+    private Path outSwingPath;
+    private RectF outSwingArcRect;
+    private int outSwingArcColor;
+    private int outMid2SegSwingArcColor;
+    private int outCircleKeduColor;
+
     private Path outCirclePointPath;        //外圈摆动的小圆点路径，由outSwingPathMeasure测量给出
     private float[] outCirclePointPos = new float[2];
     private float[] tan = new float[2];
     private boolean isOriginStatus = true;
     private RectF middleCirlceSwingRect;  //中圆环摆动的弧形矩形框
     private RectF innerCirlceSwingRect;  //内圆环摆动的弧形矩形框
+    private int midCirlceColor;
     private int swingLingOffSet;
     private Path line1AnimPath;
     private Path line1Path;
@@ -70,6 +78,11 @@ public class ArcLoadView extends View {
     private Path line2Path;
     private PathMeasure line1Measure;
     private PathMeasure line2Measure;
+    private RectF midMarkRect;
+    private float midMarkRadius;
+    private Path threePointPath;
+    private RectF threePointRect;
+
 
 
 
@@ -113,6 +126,9 @@ public class ArcLoadView extends View {
         indexPaint.setColor(Color.BLUE);
         indexPaint.setStrokeWidth(Utils.dp2px(context,1));
 
+        threePointPath = new Path();
+        threePointRect = new RectF();
+
         threeAngle = 60;
         threeAngle2 = 50;
         threeAngle3 = 40;
@@ -124,6 +140,9 @@ public class ArcLoadView extends View {
         innerCircleRadius = Utils.dp2px(context,90);
         innreCirlceGraduateRadius = (int)(innerCircleRadius / 1.8);
         graduateLineLength = Utils.dp2px(context,20);
+        outArcRect = new RectF();
+        outCirclePath = new Path();
+
 
         outIndexCircleRadius = outCirlceRadius;
         swingAngle = -80;
@@ -141,6 +160,14 @@ public class ArcLoadView extends View {
         line2Measure = new PathMeasure();
 
         midCircleMarkPath = new Path();
+        midMarkRect = new RectF();
+
+        outSwingArcRect = new RectF();
+        outSwingPath = new Path();
+        outSwingArcColor = Color.parseColor("#75C8BD");
+        outMid2SegSwingArcColor = Color.parseColor("#BDE091");
+        midCirlceColor = Color.parseColor("#75C8BD");
+        outCircleKeduColor = Color.parseColor("#5E7379");
 
         startAnim();
 
@@ -155,6 +182,7 @@ public class ArcLoadView extends View {
                 startSwingAnim();
                 startOutCirclePointSwingAnim();
                 startNotchLineAnim();
+                startMidMarkArcInAnim();
             }
         },1000);
     }
@@ -184,6 +212,16 @@ public class ArcLoadView extends View {
         line2Path.moveTo(startX2,startY2);
         line2Path.lineTo(stopX2,stopY2);
         line2Measure.setPath(line2Path,false);
+
+        outArcRect.left = (width - innerCircleRadius * 2) / 2;
+        outArcRect.top = (height - innerCircleRadius * 2) / 2;
+        outArcRect.right = (width - innerCircleRadius * 2) / 2 + innerCircleRadius * 2;
+        outArcRect.bottom = (height - innerCircleRadius * 2) / 2 + innerCircleRadius * 2;
+        outCirclePath.addArc(outArcRect,-80,340);
+
+        midMarkRadius = innerCircleRadius * 3.0f;
+
+
     }
 
     @Override
@@ -212,16 +250,24 @@ public class ArcLoadView extends View {
      */
     private void drawOutCircle(Canvas canvas){
         outCirclePaint.setStrokeWidth(2);
-        outCirclePaint.setColor(Color.parseColor("#75C8BD"));
+        outCirclePaint.setColor(midCirlceColor);
 
         //画中圆环--带缺口
-        canvas.drawPath(getThreePointPath(),outCirclePaint);
+        canvas.drawPath(outCirclePath,outCirclePaint);
 
         //画中圆环中间标记弧线
-        midCircleMarkPath.addArc(outArcRect,120,45);
+        midMarkRect.left = (width - midMarkRadius * 2) / 2;
+        midMarkRect.top = (height - midMarkRadius * 2) / 2;
+        midMarkRect.right = (width - midMarkRadius * 2) / 2 + midMarkRadius * 2;
+        midMarkRect.bottom = (height - midMarkRadius * 2) / 2 + midMarkRadius * 2;
+        midCircleMarkPath.addArc(midMarkRect,120,45);
         outCirclePaint.setColor(Color.WHITE);
         outCirclePaint.setStrokeWidth(15);
         canvas.drawPath(midCircleMarkPath,outCirclePaint);
+
+        midCircleMarkPath.addArc(midMarkRect,15,45);
+        canvas.drawPath(midCircleMarkPath,outCirclePaint);
+
 
 //        float startX = (float)(width / 2) + (float) Math.sin(arc2Angle(10)) * (innerCircleRadius + graduateLineLength / 2.0f);
 //        float startY = (float)(height / 2) - (float) Math.cos(arc2Angle(10)) * (innerCircleRadius + graduateLineLength / 2.0f);
@@ -236,6 +282,24 @@ public class ArcLoadView extends View {
 //        float stopX1 = (float)(width / 2) + (float) Math.sin(arc2Angle(350)) * (innerCircleRadius - graduateLineLength / 2.0f);
 //        float stopY1 = (float)(height / 2) - (float) Math.cos(arc2Angle(350)) * (innerCircleRadius - graduateLineLength / 2.0f);
 //        canvas.drawLine(startX1, startY1, stopX1, stopY1, animPaint);
+    }
+
+    /**
+     * 启动中间圆弧入场动画
+     */
+    private void startMidMarkArcInAnim(){
+        ValueAnimator mAnimator=ValueAnimator.ofFloat(midMarkRadius,innerCircleRadius);
+        mAnimator.setDuration(2000);
+        mAnimator.setInterpolator(new DecelerateInterpolator());
+        mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                midCircleMarkPath.reset();
+                midMarkRadius = (float) mAnimator.getAnimatedValue();
+                invalidate();
+            }
+        });
+        mAnimator.start();
     }
 
     /**
@@ -285,23 +349,6 @@ public class ArcLoadView extends View {
 
     }
 
-    /**
-     * 获取中圆环路径
-     * @return
-     */
-    private Path getThreePointPath(){
-        if(outCirclePath == null){
-            outCirclePath = new Path();
-            outArcRect = new RectF(
-                    (width - innerCircleRadius * 2) / 2,
-                    (height - innerCircleRadius * 2) / 2,
-                    (width - innerCircleRadius * 2) / 2 + innerCircleRadius * 2,
-                    (height - innerCircleRadius * 2) / 2 + innerCircleRadius * 2);
-            outCirclePath.addArc(outArcRect,-80,340);
-            //outCirclePath.addRect(outArcRect, Path.Direction.CCW);
-        }
-        return outCirclePath;
-    }
 
     /**
      * 画内外圆环的刻度线
@@ -309,10 +356,11 @@ public class ArcLoadView extends View {
      */
     private void drawCircleGraduate(Canvas canvas){
 
+        outCirclePaint.setStrokeWidth(2);
+        outCirclePaint.setStyle(Paint.Style.STROKE);
         //画外圆刻度圆环
         float evenryDegrees = arc2Angle(6.0f);
-        Point centerPos = new Point(width / 2 ,height / 2);
-        outCirclePaint.setColor(Color.parseColor("#5E7379"));
+        outCirclePaint.setColor(outCircleKeduColor);
         for (int i = 0; i < 60; i++) {
             float degrees = i * evenryDegrees;
             if (i >= 0 && i < 3 ) {
@@ -321,11 +369,11 @@ public class ArcLoadView extends View {
             if(i > 57 && i < 60){
                 continue;
             }
-            float startX = centerPos.x + (float) Math.sin(degrees) * outCirlceRadius;
-            float startY = centerPos.y - (float) Math.cos(degrees) * outCirlceRadius;
+            float startX = width / 2.0f + (float) Math.sin(degrees) * outCirlceRadius;
+            float startY = height / 2.0f - (float) Math.cos(degrees) * outCirlceRadius;
 
-            float stopX = centerPos.x + (float) Math.sin(degrees) * (outCirlceRadius + graduateLineLength);
-            float stopY = centerPos.y - (float) Math.cos(degrees) * (outCirlceRadius + graduateLineLength);
+            float stopX = width / 2.0f + (float) Math.sin(degrees) * (outCirlceRadius + graduateLineLength);
+            float stopY = height / 2.0f - (float) Math.cos(degrees) * (outCirlceRadius + graduateLineLength);
 
             canvas.drawLine(startX, startY, stopX, stopY, outCirclePaint);
         }
@@ -333,11 +381,11 @@ public class ArcLoadView extends View {
         //画内圆刻度圆环
         for (int i = 0; i < 90; i++) {
             float degrees = i * evenryDegrees;
-            float startX = centerPos.x + (float) Math.sin(degrees) * innreCirlceGraduateRadius;
-            float startY = centerPos.y - (float) Math.cos(degrees) * innreCirlceGraduateRadius;
+            float startX = width / 2.0f + (float) Math.sin(degrees) * innreCirlceGraduateRadius;
+            float startY = height / 2.0f - (float) Math.cos(degrees) * innreCirlceGraduateRadius;
 
-            float stopX = centerPos.x + (float) Math.sin(degrees) * (innreCirlceGraduateRadius + (int)(graduateLineLength / 1.5));
-            float stopY = centerPos.y - (float) Math.cos(degrees) * (innreCirlceGraduateRadius + (int)(graduateLineLength / 1.5));
+            float stopX = width / 2.0f + (float) Math.sin(degrees) * (innreCirlceGraduateRadius + (int)(graduateLineLength / 1.5));
+            float stopY = height / 2.0f - (float) Math.cos(degrees) * (innreCirlceGraduateRadius + (int)(graduateLineLength / 1.5));
 
             canvas.drawLine(startX, startY, stopX, stopY, outCirclePaint);
         }
@@ -350,38 +398,36 @@ public class ArcLoadView extends View {
      * @param canvas
      */
     private void drawPointRect(Canvas canvas){
-        Path rectpath = new Path();
 
-        Point startPos = new Point((int)outArcRect.left ,(int)outArcRect.top);
-
-
-        rectpath.addRect(new RectF(
-                startPos.x + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle))),
-                startPos.y + innerCircleRadius +(float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle))),
-                startPos.x + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle))) + innerCircleWidth,
-                startPos.y + innerCircleRadius + (float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle))) + innerCircleWidth), Path.Direction.CCW);
-
-        Paint rectPaint = new Paint();
-        rectPaint.setColor(Color.WHITE);
-        rectPaint.setStyle(Paint.Style.FILL);
-        rectPaint.setStrokeWidth(3);
-        canvas.drawPath(rectpath,rectPaint);
+        //三个点的弧形矩形框
+        outCirclePaint.setStyle(Paint.Style.FILL);
+        outCirclePaint.setStrokeWidth(3);
+        threePointRect.left = outArcRect.left + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle)));
+        threePointRect.top = outArcRect.top + innerCircleRadius +(float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle)));
+        threePointRect.right = outArcRect.left + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle))) + innerCircleWidth;
+        threePointRect.bottom = outArcRect.top + innerCircleRadius + (float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle))) + innerCircleWidth;
+        threePointPath.reset();
+        threePointPath.addRect(threePointRect,Path.Direction.CCW);
+        canvas.drawPath(threePointPath,outCirclePaint);
 
 
-        //画第二个
-        rectpath.addRect(new RectF(
-                startPos.x + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle2))),
-                startPos.y + innerCircleRadius +(float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle2))),
-                startPos.x + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle2))) + (float)(innerCircleWidth / 1.5),
-                startPos.y + innerCircleRadius + (float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle2))) + (float)(innerCircleWidth / 1.5)), Path.Direction.CCW);
-        canvas.drawPath(rectpath,rectPaint);
 
-        rectpath.addRect(new RectF(
-                startPos.x + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle3))),
-                startPos.y + innerCircleRadius +(float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle3))),
-                startPos.x + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle3))) + (float)(innerCircleWidth / 2),
-                startPos.y + innerCircleRadius + (float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle3))) + (float)(innerCircleWidth / 2)), Path.Direction.CCW);
-        canvas.drawPath(rectpath,rectPaint);
+        threePointRect.left = outArcRect.left + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle2)));
+        threePointRect.top = outArcRect.top + innerCircleRadius +(float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle2)));
+        threePointRect.right = outArcRect.left + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle2))) + (float)(innerCircleWidth / 1.5);
+        threePointRect.bottom = outArcRect.top + innerCircleRadius + (float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle2))) + (float)(innerCircleWidth / 1.5);
+        threePointPath.reset();
+        threePointPath.addRect(threePointRect,Path.Direction.CCW);
+        canvas.drawPath(threePointPath,outCirclePaint);
+
+
+        threePointRect.left = outArcRect.left + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle3)));
+        threePointRect.top = outArcRect.top + innerCircleRadius +(float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle3)));
+        threePointRect.right = outArcRect.left + innerCircleRadius + (float)(innerCircleRadius * Math.cos(arc2Angle(threeAngle3))) + (float)(innerCircleWidth / 2);
+        threePointRect.bottom = outArcRect.top + innerCircleRadius + (float)(innerCircleRadius * Math.sin(arc2Angle(threeAngle3))) + (float)(innerCircleWidth / 2);
+        threePointPath.reset();
+        threePointPath.addRect(threePointRect,Path.Direction.CCW);
+        canvas.drawPath(threePointPath,outCirclePaint);
     }
 
     /**
@@ -392,33 +438,31 @@ public class ArcLoadView extends View {
     private void drawIndexArc(Canvas canvas){
 
         //画在外环摆动的圆环
-        indexPaint.setColor(Color.parseColor("#75C8BD"));
+        indexPaint.setColor(outSwingArcColor);
         indexPaint.setStrokeWidth(Utils.dp2px(context,1));
 
-        RectF outArcRect = new RectF(
-                (width - outIndexCircleRadius * 2) / 2,
-                (height - outIndexCircleRadius * 2) / 2,
-                (width - outIndexCircleRadius * 2) / 2 + outIndexCircleRadius * 2,
-                (height - outIndexCircleRadius * 2) / 2 + outIndexCircleRadius * 2);
-        canvas.drawArc(outArcRect,swingAngle,60,false,indexPaint);
+        outSwingArcRect.left = (width - outIndexCircleRadius * 2) / 2;
+        outSwingArcRect.top = (height - outIndexCircleRadius * 2) / 2;
+        outSwingArcRect.right = (width - outIndexCircleRadius * 2) / 2 + outIndexCircleRadius * 2;
+        outSwingArcRect.bottom = (height - outIndexCircleRadius * 2) / 2 + outIndexCircleRadius * 2;
+        canvas.drawArc(outSwingArcRect,swingAngle,60,false,indexPaint);
         //canvas.drawPath(swingPath,indexPaint);
 
-        //画外环摆动圏小矩形
-        RectF outSwingRect = new RectF(
-                (width - (outIndexCircleRadius - 20) * 2) / 2,
-                (height - (outIndexCircleRadius - 20) * 2) / 2,
-                (width - (outIndexCircleRadius - 20) * 2) / 2 + (outIndexCircleRadius - 20) * 2,
-                (height - (outIndexCircleRadius - 20) * 2) / 2 + (outIndexCircleRadius - 20) * 2);
+
+        outSwingArcRect.left = (width - (outIndexCircleRadius - 20) * 2) / 2;
+        outSwingArcRect.top = (height - (outIndexCircleRadius - 20) * 2) / 2;
+        outSwingArcRect.right = (width - (outIndexCircleRadius - 20) * 2) / 2 + (outIndexCircleRadius - 20) * 2;
+        outSwingArcRect.bottom = (height - (outIndexCircleRadius - 20) * 2) / 2 + (outIndexCircleRadius - 20) * 2;
 
         indexPaint.setColor(Color.WHITE);
         indexPaint.setStrokeWidth(Utils.dp2px(context,5));
 
-        Path swingPath = new Path();
-        swingPath.addArc(outSwingRect,swingAngle,60);
-        canvas.drawArc(outSwingRect,swingAngle,10,false,indexPaint);
+        //Path swingPath = new Path();
+        outSwingPath.addArc(outSwingArcRect,swingAngle,60);
+        canvas.drawArc(outSwingArcRect,swingAngle,10,false,indexPaint);
 
         //画在swingpath 滚动的路径动画
-        outSwingPathMeasure.setPath(swingPath,false);  //设置需要测量的路径，即为外圈摆动的圆弧
+        outSwingPathMeasure.setPath(outSwingPath,false);  //设置需要测量的路径，即为外圈摆动的圆弧
         //canvas.drawPath(outCirclePointPath,indexPaint);
         if(isOriginStatus){
             float r = (outIndexCircleRadius - 20) ;
@@ -436,7 +480,7 @@ public class ArcLoadView extends View {
                     (width - innerCircleRadius * 2) / 2 + innerCircleRadius * 2,
                     (height - innerCircleRadius * 2) / 2 + innerCircleRadius * 2);
         }
-        indexPaint.setColor(Color.parseColor("#BDE091"));
+        indexPaint.setColor(outMid2SegSwingArcColor);
 
         canvas.drawArc(middleCirlceSwingRect,swingAngle + 3.75f,10,false,indexPaint);
         canvas.drawArc(middleCirlceSwingRect,swingAngle + 48.75f,10,false,indexPaint);
@@ -583,7 +627,7 @@ public class ArcLoadView extends View {
 //                //从 原始path中取出一段 放入目的path中（添加），并不会删除目的path中以前的数据
 //                outSwingPathMeasure.getSegment(start,end,outCirclePointPath,true);
 
-
+                outSwingPath.reset();
                 isOriginStatus = false;
                 float distance = (float) animation.getAnimatedValue();
                 //tan[0]是邻边 tan[1]是对边
