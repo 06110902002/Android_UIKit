@@ -5,6 +5,10 @@
     <color name="colorAccent">#D81B60</color>
     <color name="colorPrimaryTint">#bd9087</color>
     <color name="colrPrimaryTint">#8d2323</color>
+    <color name="colorEEEEEE">#EEEEEE</color>
+    <color name="color_090A0A">#090A0A</color>
+    <color name="color_00B8CC">#00B8CC</color>
+    <color name="color_00D7F0">#00D7F0</color>
 
 
 </resources>

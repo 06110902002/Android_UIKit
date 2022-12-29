@@ -49,6 +49,13 @@
         <attr name="strokeWidth" format="dimension"></attr>
     </declare-styleable>
 
+    <declare-styleable name="ProgressView">
+        <attr name="bgColor" format="color" />
+        <attr name="progressMixTextColor" format="color" />
+        <attr name="text_Color" format="color" />
+        <attr name="text_Size" format="dimension" />
+    </declare-styleable>
+
 
 
 
